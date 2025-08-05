@@ -3,12 +3,22 @@ using ToDoApi.Models;
 
 namespace ToDoApi.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(IConfiguration configuration) : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
-    }
-    
     public DbSet<TaskItem> Tasks => Set<TaskItem>();
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseNpgsql(configuration.GetConnectionString("DatabaseConnection"));
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TaskItem>(entity =>
+        {
+            entity.HasKey(n => n.Id);
+            entity.Property(n => n.Title).HasMaxLength(100);
+        });
+        base.OnModelCreating(modelBuilder);
+    }
 }

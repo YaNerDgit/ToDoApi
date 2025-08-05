@@ -2,9 +2,9 @@
 
 public class TaskItem
 {
-    public Guid Id { get; set; }
-    public string Title { get; set; } =  string.Empty;
-    public string? Description { get; set; }
-    public bool IsCompleted { get; set; } = false;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int Id { get; init; }
+    public string Title { get; init; } =  string.Empty;
+    public string? Description { get; init; }
+    public bool IsCompleted { get; init; } = false;
+    public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 }

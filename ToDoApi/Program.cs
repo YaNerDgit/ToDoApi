@@ -13,9 +13,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DatabaseConnection")));
-        
+        builder.Services.AddScoped<AppDbContext>();
         var app = builder.Build();
         
         app.UseSwagger();
