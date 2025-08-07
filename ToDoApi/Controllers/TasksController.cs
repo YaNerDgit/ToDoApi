@@ -11,7 +11,7 @@ namespace ToDoApi.Controllers;
 public class TasksController(AppDbContext context) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTaskRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] CreateTaskRequest request, CancellationToken cancellationToken)
     {
         var task = new TaskItem
         {
@@ -26,19 +26,27 @@ public class TasksController(AppDbContext context) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetTasks(CancellationToken cancellationToken)
     {
-        return Ok(await context.Tasks.ToListAsync(cancellationToken));
+        var taskDtos = await context.Tasks
+            .Select(t => new TaskDto(t.Id, t.Title, t.Description, t.IsCompleted, t.CreatedAt))
+            .ToListAsync(cancellationToken);
+        return Ok(new GetTasksResponse(taskDtos));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTask([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var task = await context.Tasks.FindAsync(id, cancellationToken);
-        if (task == null)
+        var taskQuery = context.Tasks
+            .Where(t => t.Id == id);
+        if (!taskQuery.Any())
         {
             return NotFound();
         }
 
-        return Ok(task);
+        var taskDtos = await taskQuery
+            .Select(t => new TaskDto(t.Id, t.Title, t.Description, t.IsCompleted, t.CreatedAt))
+            .ToListAsync(cancellationToken);
+
+        return Ok(new GetTasksResponse(taskDtos));
     }
 
     [HttpDelete("{id}")]
@@ -56,7 +64,7 @@ public class TasksController(AppDbContext context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTask(int id, PutTaskRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> PutTask([FromRoute] int id, PutTaskRequest request, CancellationToken cancellationToken)
     {
         var task = new TaskItem
         {
