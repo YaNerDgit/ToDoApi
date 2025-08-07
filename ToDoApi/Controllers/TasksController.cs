@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Contracts;
 using ToDoApi.Data;
@@ -6,6 +7,7 @@ using ToDoApi.Models;
 
 namespace ToDoApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController(AppDbContext context) : ControllerBase
@@ -64,7 +66,8 @@ public class TasksController(AppDbContext context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTask([FromRoute] int id, PutTaskRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> PutTask([FromRoute] int id, PutTaskRequest request,
+        CancellationToken cancellationToken)
     {
         var task = new TaskItem
         {
