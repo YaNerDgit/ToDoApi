@@ -6,6 +6,7 @@ namespace ToDoApi.Data;
 public class AppDbContext(IConfiguration configuration) : DbContext
 {
     public DbSet<TaskItem> Tasks => Set<TaskItem>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
