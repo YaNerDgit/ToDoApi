@@ -33,7 +33,8 @@ public class AuthController(AppDbContext context, IConfiguration config) : Contr
             Email = request.Email,
             PasswordHash = hashedPassword,
             FullName = request.FullName,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Role = UserRole.User
         };
 
         await context.Users.AddAsync(user, cancellationToken);
@@ -72,7 +73,7 @@ public class AuthController(AppDbContext context, IConfiguration config) : Contr
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, user.FullName),
-            new Claim(ClaimTypes.Role, "User")
+            new Claim(ClaimTypes.Role, user.Role.ToString()),
         };
 
         var token = new JwtSecurityToken(

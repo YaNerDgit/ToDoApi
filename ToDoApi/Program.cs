@@ -59,6 +59,9 @@ public class Program
                 };
             });
 
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+
         builder.Services.AddScoped<AppDbContext>();
         var app = builder.Build();
 

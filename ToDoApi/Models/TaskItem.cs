@@ -3,8 +3,12 @@
 public class TaskItem
 {
     public int Id { get; init; }
-    public string Title { get; init; } =  string.Empty;
+    public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public bool IsCompleted { get; init; } = false;
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+
+    public Guid UserId { get; init; }
+
+    public User? User { get; init; }
 }
